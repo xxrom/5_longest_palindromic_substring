@@ -1,64 +1,43 @@
 class Solution:
-  def validatePalindrom(self, s: str, left: int, index: int, letters: dict, char: str):
-    middle = (index - left)/ 2
-    dist = index - middle
-    prevPairIndex = int(middle - dist)
+  def getPalindrom(self, s: str, l: int, r: int):
+    if r > len(s) - 1 or s[l] != s[r] :
+      return ''
 
-    isNotExist = char not in letters or prevPairIndex not in letters[char]
+    while l >= 0 and r < len(s) and s[l] == s[r]:
+      print(l, r)
+      l -= 1
+      r += 1
 
-    isValid = False
+    ans = s[l + 1: r ] # get prev step before s[l: r + 1]
+    # print('end', l, r, ans)
 
-    if isNotExist and char == s[prevPairIndex]:
-      isValid = True
-
-    return isValid, prevPairIndex
+    return ans
 
   def longestPalindrome(self, s: str) -> str:
     maxLength = 0
     ansPalindrom = ''
-    left = 0
-    letters = {}
 
+    for index in range(len(s)):
+      newPalindrom = self.getPalindrom(s, index, index)
+      newPalindrom2 = self.getPalindrom(s, index, index + 1)
 
-    for index in range(0, len(s)):
-      char = s[index]
+      if len(newPalindrom2) > len(newPalindrom):
+        newPalindrom = newPalindrom2
 
-      isValid, prevIndex = self.validatePalindrom(s, left, index, letters, char)
+      # print(newPalindrom)
 
-      if char not in letters:
-        letters[char] = {}
-
-      letters[char][index] = True
-
-      print(letters)
-
-
-      print('> > left %d, right %d' % (left, index))
-
-      if isValid:
-        print('YES > index %d'% index)
-        if index - left > maxLength:
-          maxLength = index - left
-          ansPalindrom = s[left: index + 1]
-
-      else:
-        while isValid == False and left < index:
-          leftChar = s[prevIndex]
-          print('while leftChar %s' % leftChar)
-          left += 1
-
-          # if prevIndex in letters[leftChar]:
-          #   del letters[leftChar][prevIndex]
-
-          isValid, prevIndex = self.validatePalindrom(s, left, index, letters, char)
-
-          print('NO > left %d, > index %d' % (left, index))
+      if len(newPalindrom) > len(ansPalindrom):
+        ansPalindrom = newPalindrom
 
     return ansPalindrom
 
 my = Solution()
 n = "babad"
-trueAns= 3
+trueAns= 'bab'
+n = "cbbd"
+trueAns= 'bb'
+# n = "a"
+# trueAns= 'a'
 ans = my.longestPalindrome(n)
 print("ans", ans, ans == trueAns)
 
@@ -85,3 +64,7 @@ print("ans", ans, ans == trueAns)
 #   del letters[s[index]][prevSameItem] // delete c[0] in letters
 #   left += 1
 #   validate(s, left, index, letters)
+
+
+# Runtime: 948 ms, faster than 82.93% of Python3 online submissions for Longest Palindromic Substring.
+# Memory Usage: 13.9 MB, less than 53.54% of Python3 online submissions for Longest Palindromic Substring.
